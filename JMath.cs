@@ -1,6 +1,53 @@
 
 namespace JMath
 {
+
+	public static class EXCEPTION{
+		public static readonly System.Exception NO_IMPLEMENT = new System.Exception("no implementm");
+	}
+
+	public static class Mathf{
+		public static Float Min(Float a,Float b ){
+			if(a.iVal<b.iVal)return a;
+			return b;
+		}
+
+		public static Float Min(float a,Float b ){
+			return Min(new Float(a),b);
+		}
+		public static Float MaxAbs(Float a,Float b){
+			if(System.Math.Abs(a.iVal)>System.Math.Abs(b.iVal)){
+				return a;
+			}
+			return b;
+		}
+		public static int CeilToInt(Float f){
+			return (int)(f.iVal/Float.PRECISION)+1;
+		}
+		public static int Max(int a,int b){
+			if(a>b)return a;
+			return b;
+		}
+		public static Float Abs(Float a){
+			if(a.iVal<0){
+				a.iVal = -a.iVal;
+			}
+			return a;
+		}
+		public static int Abs(int a){
+			return System.Math.Abs(a);
+		}
+		public static Float Clamp(Float Val,Float v1,Float v2){
+			if(v1.iVal<Val.iVal && Val.iVal<v2.iVal){
+				return Val;
+			}
+			if (Val.iVal < v1.iVal) {
+				return v1;
+			}
+			return v2;
+		}
+	}
+
     public struct Vector2
     {
         public static Vector2 down = new Vector2(0, -1);
@@ -30,7 +77,13 @@ namespace JMath
             }
         }
 
+		public static Float Distance(Vector2 a,Vector2 b){
+			var x = a.x-b.x;
+			var y = a.y - b.y;
+			return (x * x + y * y).Sqrt ();
+		}
 
+		public Vector2(UnityEngine.Vector2 uv):this(uv.x,uv.y){}
         public Vector2(float x, float y) : this(new Float(x), new Float(y)) { }
 
         public Vector2(Float x, Float y)
@@ -88,6 +141,13 @@ namespace JMath
             v.y = v1.y - v2.y;
             return v;
         }
+		public static Vector2 operator /(Vector2 v1, Float v2)
+		{
+			var v = new Vector2 ();
+			v.x /= v1.x;
+			v.y /= v1.y;
+			return v;
+		}
         public override string ToString()
         {
             return "(" + x + "," + y + ")";
@@ -100,7 +160,7 @@ namespace JMath
     public struct Float
     {
         public const int PRECISION = 10000;
-        long iVal;
+        public long iVal;
 
         public static Float zero = new Float(0);
         public float Val
@@ -135,6 +195,7 @@ namespace JMath
             v1.iVal += v2.iVal;
             return v1;
         }
+
         public static Float operator -(Float v2)
         {
             v2.iVal = -v2.iVal;
@@ -158,6 +219,10 @@ namespace JMath
             return f;
         }
 
+		public static bool operator <=(Float v1, float v2)
+		{
+			return v1 <= new Float (v2);
+		}
 
         public static bool operator <=(Float v1, Float v2)
         {
@@ -167,6 +232,10 @@ namespace JMath
         {
             return v1.iVal < v2.iVal;
         }
+		public static bool operator >=(Float v1, float v2)
+		{
+			return v1 >= new Float (v2);
+		}
         public static bool operator >=(Float v1, Float v2)
         {
             return v1.iVal >= v2.iVal;
@@ -240,6 +309,13 @@ namespace JMath
             v1.iVal /= v2;
             return v1;
         }
+
+		public static bool operator >(Float v1,float f){
+			return v1>new Float(f);	
+		}
+		public static bool operator <(Float v1,float f){
+			return v1<new Float(f);	
+		}
 
         public override string ToString()
         {
