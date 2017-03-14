@@ -161,19 +161,22 @@ namespace JMath
     {
         public const int PRECISION = 10000;
         public long iVal;
+		public double dVal;
 
         public static Float zero = new Float(0);
         public float Val
         {
             get
             {
-                return (float)iVal / PRECISION;
+				//return (float)dVal;
+				return (float)((double)iVal/PRECISION);
             }
         }
 
         public Float(float a)
         {
             iVal = (int)(a * PRECISION);
+			dVal = a;
         }
 
         public Float(int a) : this(a, 1)
@@ -182,30 +185,36 @@ namespace JMath
         public Float(long a, int b)
         {
             this.iVal = PRECISION / b;
-            this.iVal *= a;
+			this.iVal *= a;
+			dVal = (double)a / b;
+
         }
         public Float(int a, int b)
         {
             this.iVal = PRECISION / b;
             this.iVal *= a;
+			dVal = (double)a / b;
         }
 
         public static Float operator +(Float v1, Float v2)
         {
             v1.iVal += v2.iVal;
+			v1.dVal += v2.dVal;
             return v1;
         }
 
-        public static Float operator -(Float v2)
+		public static Float operator -(Float v1, Float v2)
         {
-            v2.iVal = -v2.iVal;
-            return v2;
+			v1.iVal -=v2.iVal;
+			v1.dVal -= v2.dVal;
+			return v1;
         }
 
         public Float Sqrt()
         {
             Float f = this;
             f.iVal = (long)System.Math.Sqrt(f.iVal * PRECISION);
+			f.dVal = System.Math.Sqrt (f.dVal);
             return f;
         }
 
@@ -216,6 +225,7 @@ namespace JMath
                 return f;
             }
             f.iVal = -f.iVal;
+			f.dVal = System.Math.Abs (f.dVal);
             return f;
         }
 
@@ -267,12 +277,13 @@ namespace JMath
         {
             return v1.iVal != v2.iVal;
         }
+		public static Float operator -(Float v1)
+		{
+			v1.iVal = -v1.iVal;
+			v1.dVal = -v1.dVal;
+			return v1;
+		}
 
-        public static Float operator -(Float v1, Float v2)
-        {
-            v1.iVal -= v2.iVal;
-            return v1;
-        }
         public static Float operator *(Float v1, int v2)
         {
             v1.iVal *= v2;
