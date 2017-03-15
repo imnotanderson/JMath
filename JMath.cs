@@ -1,3 +1,5 @@
+#define DOUBLE
+
 
 namespace JMath
 {
@@ -8,20 +10,42 @@ namespace JMath
 
 	public static class Mathf{
 		public static Float Min(Float a,Float b ){
-			if(a.iVal<b.iVal)return a;
+#if DOUBLE
+            if (a.dVal < b.dVal) return a;
+            return b;
+#endif
+            if (a.iVal<b.iVal)return a;
 			return b;
 		}
 
 		public static Float Min(float a,Float b ){
-			return Min(new Float(a),b);
+#if DOUBLE
+            if (a < b.dVal) return new Float(a);
+            return b;
+#endif
+            return Min(new Float(a),b);
 		}
 		public static Float MaxAbs(Float a,Float b){
-			if(System.Math.Abs(a.iVal)>System.Math.Abs(b.iVal)){
+#if DOUBLE
+            if (System.Math.Abs(a.dVal) > System.Math.Abs(b.dVal))
+            {
+                return a;
+            }
+            return b;
+#endif
+            if (System.Math.Abs(a.iVal)>System.Math.Abs(b.iVal)){
 				return a;
 			}
 			return b;
 		}
 		public static int CeilToInt(Float f){
+#if DOUBLE
+            return (int)System.Math.Ceiling(f.dVal);
+#endif
+            if (f.iVal % Float.PRECISION == 0)
+            {
+                return (int)(f.iVal / Float.PRECISION);
+            }
 			return (int)(f.iVal/Float.PRECISION)+1;
 		}
 		public static int Max(int a,int b){
@@ -29,7 +53,11 @@ namespace JMath
 			return b;
 		}
 		public static Float Abs(Float a){
-			if(a.iVal<0){
+#if DOUBLE
+            a.dVal = System.Math.Abs(a.dVal);
+            return a;
+#endif
+            if (a.iVal<0){
 				a.iVal = -a.iVal;
 			}
 			return a;
@@ -38,7 +66,22 @@ namespace JMath
 			return System.Math.Abs(a);
 		}
 		public static Float Clamp(Float Val,Float v1,Float v2){
-			if(v1.iVal<Val.iVal && Val.iVal<v2.iVal){
+            if (v1 > v2)
+            {
+                throw new System.Exception("v1>v2");
+            }
+#if DOUBLE
+            if (Val.dVal < v1.dVal)
+            {
+                return v1;
+            }
+            if (Val.dVal > v2.dVal)
+            {
+                return v2;
+            }
+            return Val;
+#endif
+            if (v1.iVal<Val.iVal && Val.iVal<v2.iVal){
 				return Val;
 			}
 			if (Val.iVal < v1.iVal) {
@@ -122,28 +165,28 @@ namespace JMath
 
         public static Vector2 operator *(Vector2 v1, int i)
         {
-            var v = new Vector2();
+            var v = v1;
             v.x = v1.x * i;
             return v;
         }
 
         public static Vector2 operator +(Vector2 v1, Vector2 v2)
         {
-            var v = new Vector2();
+            var v = v1;
             v.x = v1.x + v2.x;
             v.y = v1.y + v2.y;
             return v;
         }
         public static Vector2 operator -(Vector2 v1, Vector2 v2)
         {
-            var v = new Vector2();
+            var v = v1;
             v.x = v1.x - v2.x;
             v.y = v1.y - v2.y;
             return v;
         }
 		public static Vector2 operator /(Vector2 v1, Float v2)
 		{
-			var v = new Vector2 ();
+            var v = v1;
 			v.x /= v1.x;
 			v.y /= v1.y;
 			return v;
@@ -168,8 +211,10 @@ namespace JMath
         {
             get
             {
-				//return (float)dVal;
-				return (float)((double)iVal/PRECISION);
+#if DOUBLE
+                return (float)dVal;
+#endif
+                return (float)((double)iVal/PRECISION);
             }
         }
 
@@ -231,27 +276,45 @@ namespace JMath
 
 		public static bool operator <=(Float v1, float v2)
 		{
-			return v1 <= new Float (v2);
+#if DOUBLE
+            return v1.dVal <= v2;
+#endif
+            return v1 <= new Float (v2);
 		}
 
         public static bool operator <=(Float v1, Float v2)
         {
+#if DOUBLE
+            return v1.dVal <= v2.dVal;
+#endif
             return v1.iVal <= v2.iVal;
         }
         public static bool operator <(Float v1, Float v2)
         {
+#if DOUBLE
+            return v1.dVal < v2.dVal;
+#endif
             return v1.iVal < v2.iVal;
         }
 		public static bool operator >=(Float v1, float v2)
 		{
-			return v1 >= new Float (v2);
+#if DOUBLE
+            return v1.dVal >= v2;
+#endif
+            return v1 >= new Float (v2);
 		}
         public static bool operator >=(Float v1, Float v2)
         {
+#if DOUBLE
+            return v1.dVal >= v2.dVal;
+#endif
             return v1.iVal >= v2.iVal;
         }
         public static bool operator >(Float v1, Float v2)
         {
+#if DOUBLE
+            return v1.dVal > v2.dVal;
+#endif
             return v1.iVal > v2.iVal;
         }
 
@@ -266,26 +329,43 @@ namespace JMath
 
         public override int GetHashCode()
         {
+#if DOUBLE
+            return dVal.GetHashCode();
+#endif
             return iVal.GetHashCode();
         }
 
         public static bool operator ==(Float v1, Float v2)
         {
+#if DOUBLE
+            return v1.dVal == v2.dVal;
+#endif
             return v1.iVal == v2.iVal;
         }
         public static bool operator !=(Float v1, Float v2)
         {
+#if DOUBLE
+            return v1.dVal != v2.dVal;
+#endif
             return v1.iVal != v2.iVal;
         }
 		public static Float operator -(Float v1)
 		{
-			v1.iVal = -v1.iVal;
+#if DOUBLE
+            v1.dVal = -v1.dVal;
+            return v1;
+#endif
+            v1.iVal = -v1.iVal;
 			v1.dVal = -v1.dVal;
 			return v1;
 		}
 
         public static Float operator *(Float v1, int v2)
         {
+#if DOUBLE
+            v1.dVal = v1.dVal * v2;
+            return v1;
+#endif
             v1.iVal *= v2;
             if ((v1.iVal > 0 && (v1.iVal) > int.MaxValue) || (v1.iVal < 0 && (-v1.iVal) > int.MaxValue))
             {
@@ -296,6 +376,10 @@ namespace JMath
 
         public static Float operator *(Float v1, Float v2)
         {
+#if DOUBLE
+            v1.dVal = v1.dVal * v2.dVal;
+            return v1;
+#endif
             v1.iVal *= v2.iVal;
             v1.iVal /= PRECISION;
             if ((v1.iVal > 0 && (v1.iVal) > int.MaxValue) || (v1.iVal < 0 && (-v1.iVal) > int.MaxValue))
@@ -307,6 +391,10 @@ namespace JMath
 
         public static Float operator /(Float v1, Float v2)
         {
+#if DOUBLE
+            v1.dVal /= v2.dVal;
+            return v1;
+#endif
             if (long.MaxValue / PRECISION < System.Math.Abs(v1.iVal))
             {
                 throw new System.Exception("Float overflow: " + v1.iVal);
@@ -317,15 +405,25 @@ namespace JMath
         }
         public static Float operator /(Float v1, int v2)
         {
+#if DOUBLE
+            v1.dVal /= v2;
+            return v1;
+#endif
             v1.iVal /= v2;
             return v1;
         }
 
 		public static bool operator >(Float v1,float f){
-			return v1>new Float(f);	
+#if DOUBLE
+            return v1.dVal > f;
+#endif
+            return v1 >new Float(f);	
 		}
 		public static bool operator <(Float v1,float f){
-			return v1<new Float(f);	
+#if DOUBLE
+            return v1.dVal < f;
+#endif
+            return v1 <new Float(f);	
 		}
 
         public override string ToString()
