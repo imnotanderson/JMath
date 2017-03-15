@@ -167,6 +167,7 @@ namespace JMath
         {
             var v = v1;
             v.x = v1.x * i;
+			v.y = v1.y * i;
             return v;
         }
 
