@@ -95,8 +95,8 @@ namespace JMath
     {
         public static Vector2 down = new Vector2(0, -1);
         public static Vector2 up = new Vector2(0, 1);
-        public static Vector2 left = new Vector2(1, 0);
-        public static Vector2 right = new Vector2(-1, 0);
+        public static Vector2 left = new Vector2(-1, 0);
+        public static Vector2 right = new Vector2(1, 0);
         public static Vector2 zero = new Vector2(0, 0);
         public static Vector2 one = new Vector2(1, 1);
 
