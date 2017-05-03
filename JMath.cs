@@ -55,6 +55,7 @@ namespace JMath
 		public static Float Abs(Float a){
 #if DOUBLE
             a.dVal = System.Math.Abs(a.dVal);
+			Float.CheckDVal (a);
             return a;
 #endif
             if (a.iVal<0){
@@ -66,9 +67,14 @@ namespace JMath
 			return System.Math.Abs(a);
 		}
 		public static Float Clamp(Float Val,Float v1,Float v2){
+			if(v1>v2){
+				var tmv = v1;
+				v1 = v2;
+				v2 = tmv;
+			}
             if (v1 > v2)
             {
-                throw new System.Exception("v1>v2");
+				throw new System.Exception("v1>v2:"+v1.dVal+">"+v2.dVal);
             }
 #if DOUBLE
             if (Val.dVal < v1.dVal)
@@ -188,8 +194,8 @@ namespace JMath
 		public static Vector2 operator /(Vector2 v1, Float v2)
 		{
             var v = v1;
-			v.x /= v1.x;
-			v.y /= v1.y;
+			v.x /= v2;
+			v.y /= v2;
 			return v;
 		}
         public override string ToString()
@@ -201,12 +207,11 @@ namespace JMath
     /// <summary>
     /// range abs(val)< int.maxVal/PRECISION --
     /// </summary>
-    public struct Float
+	public struct Float
     {
         public const int PRECISION = 10000;
         public long iVal;
 		public double dVal;
-
         public static Float zero = new Float(0);
         public float Val
         {
@@ -223,6 +228,7 @@ namespace JMath
         {
             iVal = (int)(a * PRECISION);
 			dVal = a;
+			CheckDVal (this);
         }
 
         public Float(int a) : this(a, 1)
@@ -233,6 +239,7 @@ namespace JMath
             this.iVal = PRECISION / b;
 			this.iVal *= a;
 			dVal = (double)a / b;
+			CheckDVal (this);
 
         }
         public Float(int a, int b)
@@ -240,12 +247,14 @@ namespace JMath
             this.iVal = PRECISION / b;
             this.iVal *= a;
 			dVal = (double)a / b;
+			CheckDVal (this);
         }
 
         public static Float operator +(Float v1, Float v2)
         {
             v1.iVal += v2.iVal;
 			v1.dVal += v2.dVal;
+			CheckDVal (v1);
             return v1;
         }
 
@@ -253,6 +262,7 @@ namespace JMath
         {
 			v1.iVal -=v2.iVal;
 			v1.dVal -= v2.dVal;
+			CheckDVal (v1);
 			return v1;
         }
 
@@ -261,6 +271,7 @@ namespace JMath
             Float f = this;
             f.iVal = (long)System.Math.Sqrt(f.iVal * PRECISION);
 			f.dVal = System.Math.Sqrt (f.dVal);
+			CheckDVal (f);
             return f;
         }
 
@@ -272,9 +283,15 @@ namespace JMath
             }
             f.iVal = -f.iVal;
 			f.dVal = System.Math.Abs (f.dVal);
+			CheckDVal (f);
             return f;
         }
-
+		public static void CheckDVal(Float f){
+			return;
+			if( double.IsNaN( f.dVal) || double.IsInfinity(f.dVal)){
+				UnityEngine.MonoBehaviour.print ("xxx");
+			}
+		}
 		public static bool operator <=(Float v1, float v2)
 		{
 #if DOUBLE
@@ -354,6 +371,7 @@ namespace JMath
 		{
 #if DOUBLE
             v1.dVal = -v1.dVal;
+			CheckDVal(v1);
             return v1;
 #endif
             v1.iVal = -v1.iVal;
@@ -365,6 +383,7 @@ namespace JMath
         {
 #if DOUBLE
             v1.dVal = v1.dVal * v2;
+			CheckDVal(v1);
             return v1;
 #endif
             v1.iVal *= v2;
@@ -379,6 +398,7 @@ namespace JMath
         {
 #if DOUBLE
             v1.dVal = v1.dVal * v2.dVal;
+			CheckDVal(v1);
             return v1;
 #endif
             v1.iVal *= v2.iVal;
@@ -394,6 +414,7 @@ namespace JMath
         {
 #if DOUBLE
             v1.dVal /= v2.dVal;
+			CheckDVal(v1);
             return v1;
 #endif
             if (long.MaxValue / PRECISION < System.Math.Abs(v1.iVal))
@@ -408,6 +429,7 @@ namespace JMath
         {
 #if DOUBLE
             v1.dVal /= v2;
+			CheckDVal(v1);
             return v1;
 #endif
             v1.iVal /= v2;
