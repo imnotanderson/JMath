@@ -1,5 +1,7 @@
-#define DOUBLE
+//#define DOUBLE
+//#define UNITY
 
+using System;
 
 namespace JMath
 {
@@ -99,12 +101,12 @@ namespace JMath
 
     public struct Vector2
     {
-        public static Vector2 down = new Vector2(0, -1);
-        public static Vector2 up = new Vector2(0, 1);
-        public static Vector2 left = new Vector2(-1, 0);
-        public static Vector2 right = new Vector2(1, 0);
-        public static Vector2 zero = new Vector2(0, 0);
-        public static Vector2 one = new Vector2(1, 1);
+        public static readonly Vector2 down = new Vector2(0, -1);
+        public static readonly Vector2 up = new Vector2(0, 1);
+        public static readonly Vector2 left = new Vector2(-1, 0);
+        public static readonly Vector2 right = new Vector2(1, 0);
+        public static readonly Vector2 zero = new Vector2(0, 0);
+        public static readonly Vector2 one = new Vector2(1, 1);
 
         public Float x, y;
         public Vector2 normalized
@@ -118,6 +120,7 @@ namespace JMath
                 return v;
             }
         }
+#if UNITY
         public UnityEngine.Vector2 Val
         {
             get
@@ -125,14 +128,15 @@ namespace JMath
                 return new UnityEngine.Vector2(x.Val, y.Val);
             }
         }
-
+#endif
 		public static Float Distance(Vector2 a,Vector2 b){
 			var x = a.x-b.x;
 			var y = a.y - b.y;
 			return (x * x + y * y).Sqrt ();
 		}
-
+#if UNITY
 		public Vector2(UnityEngine.Vector2 uv):this(uv.x,uv.y){}
+#endif
         public Vector2(float x, float y) : this(new Float(x), new Float(y)) { }
 
         public Vector2(Float x, Float y)
@@ -226,7 +230,7 @@ namespace JMath
 
         public Float(float a)
         {
-            iVal = (int)(a * PRECISION);
+            iVal = (long)(a * PRECISION);
 			dVal = a;
 			CheckDVal (this);
         }
@@ -250,6 +254,11 @@ namespace JMath
 			CheckDVal (this);
         }
 
+	    public static implicit operator Float(float v)
+	    {
+		    return new Float(v);
+	    }
+	    
         public static Float operator +(Float v1, Float v2)
         {
             v1.iVal += v2.iVal;
@@ -289,7 +298,9 @@ namespace JMath
 		public static void CheckDVal(Float f){
 			return;
 			if( double.IsNaN( f.dVal) || double.IsInfinity(f.dVal)){
+#if UNITY
 				UnityEngine.MonoBehaviour.print ("xxx");
+#endif
 			}
 		}
 		public static bool operator <=(Float v1, float v2)
@@ -401,12 +412,16 @@ namespace JMath
 			CheckDVal(v1);
             return v1;
 #endif
-            v1.iVal *= v2.iVal;
+	        var d1 = v1.iVal - int.MaxValue;
+	        var d2 = v2.iVal - int.MaxValue;
+	        if (d1 > 0 || d2 > 0)
+	        {
+		        throw new System.Exception("Float overflow " + v1.iVal + ">" + int.MaxValue + "   " + v2.iVal + " > " +
+		                                   int.MaxValue);
+	        }
+	        v1.iVal *= v2.iVal;
             v1.iVal /= PRECISION;
-            if ((v1.iVal > 0 && (v1.iVal) > int.MaxValue) || (v1.iVal < 0 && (-v1.iVal) > int.MaxValue))
-            {
-                throw new System.Exception("Float overflow " + v1.iVal + " * " + v2.iVal);
-            }
+       
             return v1;
         }
 
