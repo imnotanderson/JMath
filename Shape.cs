@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace JMath
 {
@@ -92,10 +91,11 @@ namespace JMath
         #endregion
         
         #region gjk
-        private List<Vector2> Simplex = new List<Vector2>();
+        
         //Simplex is a list of points declared globally 
         Vector2 GetGjkDepth(Shape shape1, Shape shape2)
         {
+            List<Vector2> Simplex = new List<Vector2>();
             Vector2 d = new Vector2(1, -1);
             Simplex.Add(support(shape1, shape2, d));
             
@@ -130,7 +130,7 @@ namespace JMath
                 }
                 else
                 {
-                    if (containsOrigin(ref d) )//also change direction
+                    if (containsOrigin(Simplex,ref d) )//also change direction
                     {
                         // if it does then we know there is a collision
                         isCollide = true;
@@ -153,7 +153,7 @@ namespace JMath
         }
         
         
-        private bool containsOrigin(ref Vector2  d)
+        private bool containsOrigin(List<Vector2>Simplex,ref Vector2  d)
         {
             // get the last point added to the simplex
             Vector2 a = Simplex.Last();

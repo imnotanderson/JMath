@@ -1,4 +1,6 @@
-﻿namespace JMath
+﻿//#define UNITY
+#if UNITY
+namespace JMath
 {
 	using UnityEngine;
 	using System.Collections.Generic;
@@ -58,3 +60,4 @@
 
 	}
 }
+#endif

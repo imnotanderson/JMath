@@ -1,4 +1,6 @@
-﻿namespace JMath
+﻿//#define UNITY
+#if UNITY
+namespace JMath
 {
 	using UnityEngine;
 
@@ -40,3 +42,4 @@
 
 
 }
+#endif
