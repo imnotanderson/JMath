@@ -9,7 +9,27 @@ namespace JMath
         private const int LOOP_MAX = 1000;
         private Exception LOOP_MAX_EXCEPTION = new Exception("LOOP_MAX_EXCEPTION");
         
-        public List<Vector2> pList = new List<Vector2>();
+        List<Vector2> pList = new List<Vector2>();
+        public Vector2 pos;
+        public int Count
+        {
+            get
+            {
+                if (pList == null) return 0;
+                return pList.Count;
+            }
+        }
+
+        public Vector2 this[int idx]
+        {
+            get { return pList[idx] + pos; }
+        }
+
+        public Shape(Vector2 pos, params Vector2[] points)
+        {
+            this.pos = pos;
+            pList.AddRange(points);
+        }
 
         public Vector2 GetGjkDepth(Shape s)
         {
@@ -257,11 +277,11 @@ namespace JMath
         Vector2 getFarthestPointInDirection(Vector2 d)
         {
             int index = 0;
-            var maxDot = this.pList[index].Dot(d);
+            var maxDot = this[index].Dot(d);
 
-            for (int i = 1; i < pList.Count; i++)
+            for (int i = 1; i < Count; i++)
             {
-                var dot = Vector2.Dot(pList[i], d);
+                var dot = Vector2.Dot(this[i], d);
 
                 if (dot > maxDot)
                 {
@@ -270,7 +290,7 @@ namespace JMath
                 }
             }
 
-            return pList[index];
+            return this[index];
         }
 
         #endregion
