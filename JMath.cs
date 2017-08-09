@@ -1,4 +1,6 @@
-//#define UNITY
+#define UNITY
+using UnityEngine;
+
 namespace JMath
 {
 	public static class EXCEPTION{
@@ -46,7 +48,7 @@ namespace JMath
 				v1 = v2;
 				v2 = tmv;
 			}
-            if (v1.iVal<Val.iVal && Val.iVal<v2.iVal){
+            if (v1.iVal<=Val.iVal && Val.iVal<=v2.iVal){
 				return Val;
 			}
 			if (Val.iVal < v1.iVal) {
@@ -58,7 +60,7 @@ namespace JMath
 
     public struct Vector2
     {
-        public static readonly Vector2 down = new Vector2(0, -1);
+	    public static readonly Vector2 down = new Vector2(0, -1);
         public static readonly Vector2 up = new Vector2(0, 1);
         public static readonly Vector2 left = new Vector2(-1, 0);
         public static readonly Vector2 right = new Vector2(1, 0);
@@ -163,6 +165,14 @@ namespace JMath
             v.y = v1.y - v2.y;
             return v;
         }
+	    public static Vector2 operator -(Vector2 v2)
+	    {
+		    var v1 = zero;
+		    var v = v1;
+		    v.x = v1.x - v2.x;
+		    v.y = v1.y - v2.y;
+		    return v;
+	    }
 		public static Vector2 operator /(Vector2 v1, Float v2)
 		{
             var v = v1;

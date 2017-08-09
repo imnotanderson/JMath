@@ -9,7 +9,7 @@ namespace JMath
         private const int LOOP_MAX = 1000;
         private Exception LOOP_MAX_EXCEPTION = new Exception("LOOP_MAX_EXCEPTION");
         
-        List<Vector2> pList = new List<Vector2>();
+        public List<Vector2> pList = new List<Vector2>();
         public Vector2 pos;
         public int Count
         {
