@@ -56,6 +56,13 @@ namespace JMath
 			}
 			return v2;
 		}
+
+		public static Float MoveTowards(Float Val, Float to, Float speed)
+		{
+			var newVal = Val + speed;
+			newVal = Clamp(newVal, Val, to);
+			return newVal;
+		}
 	}
 
     public struct Vector2
