@@ -2,6 +2,14 @@ JMath
 ====
 自用c#确定性数学库.
 
+Usage
+---------
+
+* 由于使用了 unsafe 关键字,Unity使用时,需在 Assets 下建立 smcs.rsp ,内容 
+```
+-unsafe
+``` 
+
 Features
 ---------
 
