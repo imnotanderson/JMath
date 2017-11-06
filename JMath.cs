@@ -17,7 +17,7 @@ namespace JMath
             return Min(new Float(a),b);
 		}
 		public static Float MaxAbs(Float a,Float b){
-            if (System.Math.Abs(a.iVal)>System.Math.Abs(b.iVal)){
+            if (Mathf.Abs(a.iVal)>Mathf.Abs(b.iVal)){
 				return a;
 			}
 			return b;
@@ -39,8 +39,14 @@ namespace JMath
 			}
 			return a;
 		}
-		public static int Abs(int a){
-			return System.Math.Abs(a);
+
+		public static int Abs(int a)
+		{
+			if (a > 0)
+			{
+				return a;
+			}
+			return -a;
 		}
 		public static Float Clamp(Float Val,Float v1,Float v2){
 			if(v1>v2){
@@ -62,6 +68,19 @@ namespace JMath
 			var newVal = Val + speed;
 			newVal = Clamp(newVal, Val, to);
 			return newVal;
+		}
+
+		public static unsafe Float Sqrt(Float Val)
+		{
+			float x = Val.Val;
+			float xhalf = 0.5f * x;
+			int i = *(int*) &x;
+			i = 0x5f375a86 - (i >> 1);
+			x = *(float*) &i;
+			x = x * (1.5f - xhalf * x * x);
+			x = x * (1.5f - xhalf * x * x);
+			x = x * (1.5f - xhalf * x * x);
+			return 1 / x;
 		}
 	}
 
@@ -267,8 +286,7 @@ namespace JMath
         public Float Sqrt()
         {
             Float f = this;
-            f.iVal = (long)System.Math.Sqrt(f.iVal * PRECISION);
-            return f;
+	        return Mathf.Sqrt(f);
         }
 
         static Float Abs(Float f)
@@ -361,7 +379,7 @@ namespace JMath
 
         public static Float operator /(Float v1, Float v2)
         {
-            if (long.MaxValue / PRECISION < System.Math.Abs(v1.iVal))
+            if (long.MaxValue / PRECISION < Mathf.Abs(v1.iVal))
             {
                 throw new System.Exception("Float overflow: " + v1.iVal);
             }

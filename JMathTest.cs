@@ -7,12 +7,13 @@ namespace JMath
 		public static void Test()
 		{
 			Float
-				a = 1000000000000f,
+				a = 10000000000f,
 				b = 0.001f;
 			
 			Print(a);
 			Print(b);
-			Print(a/b);
+			Print(a.Sqrt());
+			Print(b.Sqrt());
 		}
 
 		static void Print(object obj)
