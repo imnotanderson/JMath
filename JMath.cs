@@ -206,6 +206,16 @@ namespace JMath
 			v.y /= v2;
 			return v;
 		}
+	    
+	    public static bool operator ==(Vector2 v1, Vector2 v2)
+	    {
+		    return v1.x.iVal == v2.x.iVal && v1.y.iVal == v2.y.iVal;
+	    }
+	    
+	    public static bool operator !=(Vector2 v1, Vector2 v2)
+	    {
+		    return !(v1 == v2);
+	    }
 
 	    public void Negate()
 	    {
@@ -227,6 +237,15 @@ namespace JMath
         {
             return "(" + x + "," + y + ")";
         }
+	    
+	    //Project--
+	    public static Vector2 Project(Vector2 vector, Vector2 onNormal)
+	    {
+		    var num = Vector2.Dot(onNormal, onNormal);
+		    if (num == 0)
+			    return Vector2.zero;
+		    return onNormal * Vector2.Dot(vector, onNormal) / num;
+	    }
     }
 
     /// <summary>

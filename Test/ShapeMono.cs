@@ -36,6 +36,7 @@ namespace JMath
 			ps = new List<JMath.Vector2>();
 			foreach (var t in tList)
 			{
+				if (t == null) continue;
 				var p = t.localPosition;
 				ps.Add(new JMath.Vector2(p.x, p.y));
 			}

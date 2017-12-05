@@ -9,7 +9,7 @@ namespace JMath
         private const int LOOP_MAX = 1000;
         private Exception LOOP_MAX_EXCEPTION = new Exception("LOOP_MAX_EXCEPTION");
         
-        public List<Vector2> pList = new List<Vector2>();
+        private List<Vector2> pList = new List<Vector2>();
         public Vector2 pos;
         public int Count
         {
@@ -43,7 +43,8 @@ namespace JMath
             Float distance = 0;
             int index = 0;
             Vector2 normal = Vector2.zero;
-            
+            penetration_depth = 0;
+            penetration_vector = Vector2.zero;
             var loopMax = LOOP_MAX;
             while(true)
             {
@@ -51,7 +52,7 @@ namespace JMath
                     loopMax--;
                     if (loopMax < 0)
                     {
-                        throw LOOP_MAX_EXCEPTION;
+                        return true;
                         break;
                     }
                 }
