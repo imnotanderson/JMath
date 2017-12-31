@@ -1,5 +1,5 @@
-#define UNITY
-using UnityEngine;
+//#define UNITY
+#define UNSAFE
 
 namespace JMath
 {
@@ -69,7 +69,7 @@ namespace JMath
 			newVal = Clamp(newVal, Val, to);
 			return newVal;
 		}
-
+#if UNSAFE
 		public static unsafe Float Sqrt(Float Val)
 		{
 			float x = Val.Val;
@@ -82,6 +82,13 @@ namespace JMath
 			x = x * (1.5f - xhalf * x * x);
 			return 1 / x;
 		}
+#else
+		public static Float Sqrt(Float Val)
+		{
+			return  (Float)System.Math.Sqrt(Val.Val);
+		}
+#endif
+		
 	}
 
     public struct Vector2
@@ -121,10 +128,15 @@ namespace JMath
             }
         }
 #endif
+	    public static Float DistanceSquare(Vector2 a, Vector2 b)
+	    {
+		    var x = a.x-b.x;
+		    var y = a.y - b.y;
+		    return x * x + y * y;
+	    }
+	    
 		public static Float Distance(Vector2 a,Vector2 b){
-			var x = a.x-b.x;
-			var y = a.y - b.y;
-			return (x * x + y * y).Sqrt ();
+			return DistanceSquare(a, b).Sqrt();
 		}
 #if UNITY
 		public Vector2(UnityEngine.Vector2 uv):this(uv.x,uv.y){}
@@ -253,7 +265,7 @@ namespace JMath
     /// </summary>
 	public struct Float
     {
-        public const int PRECISION = 10000;
+        public const int PRECISION = 1000000;
 	    public const float TOLERANCE = 10f/PRECISION;
 	    public long iVal;
 	    

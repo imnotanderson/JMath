@@ -4,6 +4,7 @@ namespace JMath
 {
 	public static class JMathTest
 	{
+		
 		public static void Test()
 		{
 			Float

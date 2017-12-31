@@ -15,6 +15,7 @@ namespace JMath
 			if (x1 == null || x2 == null) return;
 			depth = x1.s1.GetGjkDepth(x2.s1);
 			name = "check " + depth;
+
 		}
 
 		JMath.Vector2 depth = Vector2.zero;

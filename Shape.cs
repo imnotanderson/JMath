@@ -36,6 +36,11 @@ namespace JMath
             return GetGjkDepth(this, s);
         }
 
+        public Vector2 GetSATDepth(Shape s)
+        {
+            return GetSATDepth(this, s);
+        }
+
         #region epa
 
         bool EPA(Shape shapeA, Shape shapeB, List<Vector2> simplex, out Float penetration_depth, out Vector2 penetration_vector)
@@ -107,6 +112,156 @@ namespace JMath
                     normal = n;
                 }
             }
+        }
+
+        #endregion
+
+        #region SAT
+
+        public static Vector2 GetSATDepth(Shape shape1, Shape shape2)
+        {
+            var normals1 = getNormals(shape1);
+            var normals2 = getNormals(shape2);
+            List<Vector2>normals = new List<Vector2>(normals1);
+            normals.AddRange(normals2);
+            Vector2? dir = null;
+            foreach (var normal in normals)
+            {
+                var project1 = getProjectByNormal(shape1, normal);
+                var project2 = getProjectByNormal(shape2, normal);
+                if (IsProjectCorss(project1, project2, normal,ref dir))
+                {
+                }
+                else
+                {
+                    return Vector2.zero;
+                }
+            }
+            return dir == null ? Vector2.zero : dir.Value;
+        }
+
+        public static Vector2[] getLine(params Vector2[] ps)
+        {
+            if (ps.Length <= 2)
+            {
+                return ps;
+            }
+            var r1 = ps[0];
+            var r2 = ps[1];
+            for (int i = 2; i < ps.Length; i++)
+            {
+                var p = ps[i];
+                var v1 = r1 - r2;
+                var v2 = p - r2;
+                if (v1.Dot(v2) > 0)
+                {
+                    if (v1.distance < v2.distance)
+                    {
+                        r1 = p;
+                    }
+                }
+                else
+                {
+                    r2 = p;
+                }
+            }
+            return new Vector2[] {r1, r2};
+        }
+        
+        public static bool IsProjectCorss(Vector2[] project1, Vector2[] project2, Vector2 normal,ref Vector2? dir)
+        {
+            var p1 = project1[0] - project2[0];
+            var p2 = project1[0] - project2[1];
+            var p3 = project1[1] - project2[0];
+            var p4 = project1[1] - project2[1];
+
+            var line = getLine(p1, p2, p3, p4);
+            if (line[0].x * line[1].x < 0 || line[0].y * line[1].y < 0)
+            {
+                foreach (var p in line)
+                {
+                    if (dir == null || dir.Value.distance > p.distance)
+                    {
+                        dir = p;
+                    }
+                }
+                return true;
+            }
+
+            return false;
+        }
+
+        static bool isPointInLine(Vector2[] line, Vector2 point)
+        {
+            var d1 = Vector2.Distance(line[0], point);
+            var d2 = Vector2.Distance(line[1], point);
+            if ( d1 + d2 <= Vector2.Distance(line[0], line[1]))
+            {
+                var dir = line[1] - line[0];
+                dir = dir.normalized;
+                return true;
+            }
+            return false;
+        }
+        
+        public static Vector2[] getProjectByNormal(Shape shape, Vector2 normal)
+        {
+            Vector2 p1 = Vector2.zero, p2 = Vector2.zero;
+            Float d = 0;
+            for (int i = 0; i < shape.Count; i++)
+            {
+                var v = shape[i];
+                v = Vector2.Project(v, normal);
+                if (i == 0)
+                {
+                    p1 = p2 = v;
+                    d = 0;
+                }
+                else
+                {
+                    if ((v - p1).Dot(p2 - p1) < 0)
+                    {
+                        p1 = v;
+                        d = Vector2.DistanceSquare(p1, p2);
+                        continue;
+                    }
+                    var newdistance = Vector2.DistanceSquare(p1, v); 
+                    if (newdistance > d)
+                    {
+                        p2 = v;
+                        d = newdistance;
+                        continue;
+                    }
+                }
+            }
+            
+            var tmV = p2 - p1;
+            var dotVal = tmV.Dot(normal); 
+            if (dotVal >= 0)
+            {
+                return new Vector2[] {p1, p2};
+            }
+            return new Vector2[] {p2, p1};
+        }
+
+        static Vector2[] getNormals(Shape shape)
+        {
+            Vector2[] normals = new Vector2[shape.Count];
+            for (int i = 0; i < shape.Count; i++)
+            {
+                var idx1 = i;
+                var idx2 = i + 1;
+                if (idx2 == shape.Count)
+                {
+                    idx2 = 0;
+                }
+                var v = shape[idx2] - shape[idx1];
+                var y = -v.x;
+                v.x = v.y;
+                v.y = y;
+                normals[i] = v;
+            }
+            return normals;
         }
 
         #endregion
